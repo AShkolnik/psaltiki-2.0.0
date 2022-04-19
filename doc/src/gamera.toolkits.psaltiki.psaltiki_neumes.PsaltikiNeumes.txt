@@ -1,0 +1,13 @@
+class ``PsaltikiNeumes``
+========================
+
+``PsaltikiNeumes``
+------------------
+
+In module ``gamera.toolkits.psaltiki.psaltiki_neumes``
+
+.. docstring:: gamera.toolkits.psaltiki.psaltiki_neumes PsaltikiNeumes
+   :no_title:
+
+.. docstring:: gamera.toolkits.psaltiki.psaltiki_neumes PsaltikiNeumes __init__ create_grouping_list correct_outliers coloring_groups get_chant_code get_txt_output
+

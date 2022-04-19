@@ -1,0 +1,48 @@
+=======
+Plugins
+=======
+
+By categories
+-------------
+
+- Psaltiki_
+
+  - Create_PsaltikiPage_
+
+  - Preprocessing_
+
+    - correct_rotation_
+
+    - preprocess_
+
+    - remove_copy_border_
+
+    - smooth_
+
+Alphabetical
+-------------
+
+
+**C**
+
+correct_rotation_, Create_PsaltikiPage_
+
+**P**
+
+preprocess_
+
+**R**
+
+remove_copy_border_
+
+**S**
+
+smooth_
+
+.. _Psaltiki: psaltiki.html#psaltiki
+.. _Create_PsaltikiPage: psaltiki.html#create-psaltikipage
+.. _Preprocessing: psaltiki.html#preprocessing
+.. _correct_rotation: psaltiki.html#correct-rotation
+.. _preprocess: psaltiki.html#preprocess
+.. _remove_copy_border: psaltiki.html#remove-copy-border
+.. _smooth: psaltiki.html#smooth

@@ -1,0 +1,302 @@
+=======================================
+Psaltiki Recognition Toolkit for Gamera
+=======================================
+
+:Editor: Christoph Dalitz
+
+:Version: 1.1.2
+
+See the `project home page`_ for general information and file releases or
+the `SourceForge project page`_ for access to CVS.
+
+.. _`project home page`: http://psaltiki4gamera.sourceforge.net/
+.. _`SourceForge project page`: http://sourceforge.net/projects/psaltiki4gamera/
+
+
+Overview
+''''''''
+
+The aim of the *Psaltiki Recognition Toolkit* is to recognize historic
+prints of contemporary psaltic notation, a neumatic notation system for 
+Byzantine music developed in the 19th century in Constantinople.
+
+This toolkit provides 
+
+- ready to use recognition programs for training neumes and the actual
+  recognition based on the trained data
+
+- python library functions for building own Psaltiki recognition applications
+
+It is based on and requires the `Gamera framework`__ for document analysis
+and recognition.
+
+.. __: http://gamera.sourceforge.net/
+
+
+The Recognition Process
+-----------------------
+
+*Optical Psaltiki Recognition* means the extraction of a
+machine readable encoding from bitmap images of historic Psaltiki
+prints. This process typically consists of the following steps:
+
+**Preprocessing:**
+  Includes image enhancement techniques (like smoothing or skew
+  correction) and lyrics removal.
+
+**Segmentation:**
+  Separation of the individual neumes symbols and identification
+  of lines.
+
+**Classification:**
+  Identification of the individual neumes symbols.
+
+**Postprocessing:**
+  Although the classification step yields the neume type, this information
+  needs further semantic interpretation, because the musical meaning depends
+  on the local position of a neume on the page and its neighbouring neumes.
+  The resulting musical meaning is encoded in some way and given out as the
+  result of the recognition process.
+
+Some methods for these steps are supplied in this toolkit, some are already
+part of the core gamera distribution as shown in the following table:
+
+  +--------------------------+------------------------+
+  | Recognition step         | Provided by            |
+  +==========================+========================+
+  | Smoothing,               | Psaltiki toolkit       |
+  | Copy border removal,     |                        |
+  | Skew correction,         |                        |
+  +--------------------------+------------------------+
+  | Segmentation             | Gamera: CC analysis    |
+  +--------------------------+------------------------+
+  | Classification           | Gamera: kNN classifier |
+  +--------------------------+------------------------+
+  | Semantic interpretation, | Psaltiki toolkit       |
+  | music code output        |                        |
+  +--------------------------+------------------------+
+
+
+Provided Components
+-------------------
+
+The toolkit consists of Gamera plugin image functions and
+some end user applications.
+
+The plugins are for preprocessing like image enhancement and are documented in
+the `plugin reference`__.
+
+.. __: plugins.html
+
+The end user applications are
+
+- a graphical user interface for starting an interactive training session
+  for neumes
+- *psaltiki_recognize* for automatic recognition of a music image
+
+
+
+User's Manual
+'''''''''''''
+
+This documentation is for those, who want to use the toolkit for Psaltiki
+recognition, but are not interested in extending its capabilities beyond the 
+adaption to specific neume symbols.
+
+- `Using the toolkit`_: gives a step by step explanation both how to
+  adapt the recognition for specific prints (*training*) and
+  how to apply this to Psaltiki recognition
+- Plugins_: Reference for the plugin functions shipped with this toolkit.
+  These can also be called from the image context menu in the Gamera GUI.
+
+.. _`Using the toolkit`: usermanual.html
+.. _Plugins: plugins.html
+
+
+Developer's Manual
+''''''''''''''''''
+
+This documentation is for those who want to use the toolkit as a library
+for writing custom recognition scripts. Moreover it describes some
+common tweaks like the generation of a different output encoding.
+
+- `Developer's manual`_: describes how to extend the toolkit
+- Reference for the classes defined in this toolkit:
+    - PsaltikiPage_ can be used for detecting baselines and the characteristic
+      dimensions
+    - PsaltikiNeumes_ is for semantic postprocessing and can generate an
+      output encoding
+
+.. _PsaltikiPage: gamera.toolkits.psaltiki.psaltiki_page.PsaltikiPage.html
+.. _PsaltikiNeumes: gamera.toolkits.psaltiki.psaltiki_neumes.PsaltikiNeumes.html
+.. _`Developer's manual`: developermanual.html
+
+
+Installation
+''''''''''''
+
+The following installation instructions describe how to install the toolkit
+from the sources, eg. from a curren cvs snapshot. They should work for any
+Unix like operating system (MacOS X, Linux, Solaris, FreeBSD, ...).
+On Windows they require that Mingw32_ is installed.
+Alternatively you can use the binary installers from the project home page;
+these however are restricted to specific versions of Python and wxPython.
+
+.. _Mingw32: http://mingw.org/
+
+Prerequisites
+-------------
+
+You will need a working installation of Gamera 3.x. See the 
+`Gamera website`__ for details.
+
+.. __: http://gamera.sourceforge.net/
+
+If you want to generate the documentation, you will need two additional
+third-party Python libraries:
+
+  - docutils_ (version 0.3 or later) for handling reStructuredText documents.
+
+  - SilverCity_ (version 0.9 or later) or pygments_ for colorizing source code.
+
+.. _docutils: http://docutils.sourceforge.net/
+.. _SilverCity: http://silvercity.sourceforge.net/
+.. _pygments: http://pygments.org/
+
+.. note:: It is generally not necessary to generate the documentation 
+   because it is included in file releases of the toolkit.
+
+
+Building and Installing
+-----------------------
+
+To build and install this toolkit on Linux or MacOS X, go to the base 
+directory of the toolkit distribution and run the ``setup.py`` script as
+follows::
+
+   # 1) compile
+   python setup.py build
+
+   # 2) install
+   #    a) on MacOS X
+   sudo python setup.py install
+   #    b) on Linux
+   su root -c setup.py install
+
+Command 1) compiles the toolkit from the sources and command 2) installs
+it. As the latter requires
+root privilegue, you need to use ``sudo`` (vanilla MacOS X configuration)
+or ``su root -c`` (vanilla Linux configuration).
+
+On Windows you must run the following commands from the Msys shell prompt
+instead::
+
+   # 1) compile
+   python setup.py build --compiler=mingw32
+
+   # 2) build an installer and run it
+   python setup.py build --compiler=mingw32 bdist_wininst
+   dist/psaltiki4gamera-X.X.X-win32.exe
+
+Note that the standalone scripts are installed into ``/usr/bin`` on Linux,
+but into ``/System/Library/Frameworks/Python.framework/Versions/2.3/bin``
+on MacOS X. As the latter directory is not in the standard search path,
+you could either add it to your search path, or install the scripts
+additionally into ``/usr/bin`` on MacOS X with::
+
+   # install scripts into standard path (MacOS X only)
+   sudo python setup.py install_scripts -d /usr/bin
+
+To regenerate the documentation, go to the ``doc`` directory and run the
+``gendoc.py`` script. The output will be placed in the ``doc/html/``
+directory.  The contents of this directory can be placed on a webserver
+for convenient viewing.
+
+.. note:: Before building the documentation you must install the
+   toolkit. Otherwise ``gendoc.py`` will not find the plugin documentation.
+
+
+Installing without root privileges
+----------------------------------
+
+The above installation with ``python setup.py install`` will install
+the toolkit system wide and thus requires root privileges. If you do
+not have root access (Linux) or are no sudoer (MacOS X), you can
+install the Psaltiki toolkit into your home directory. Note however
+that this also requires that gamera is installed into your home directory.
+It is currently not possible to install gamera globally and only toolkits
+locally.
+
+Here are the steps to install both gamera and the Psaltiki toolkit into
+``~/python``::
+
+   # install gamera locally
+   mkdir ~/python
+   python setup.py install --prefix=~/python
+
+   # build and install the Psaltiki toolkit locally
+   export CFLAGS=-I~/python/include/python2.3/gamera
+   python setup.py build
+   python setup.py install --prefix=~/python
+
+Moreover you should set the following environment variables in your 
+``~/.profile``::
+
+   # search path for python modules
+   export PYTHONPATH=~/python/lib/python
+
+   # search path for executables (eg. gamera_gui)
+   export PATH=~/python/bin:$PATH
+
+
+Uninstallation
+--------------
+
+The installation uses the Python *distutils*, which do not support
+uninstallation on Linux or MacOS X. Thus you need to remove the
+installed files manually:
+
+- the installed Python library files of the toolkit
+
+- the installed standalone scripts
+
+On Windows, you can use the uninstaller from "System Settings/Software".
+
+
+Python Library Files
+````````````````````
+
+All python library files of this toolkit are installed into the 
+``gamera/toolkits/psaltiki`` subdirectory of the Python library folder.
+Thus it is sufficient to remove this directory for an uninstallation.
+
+Where the python library folder is depends on your system and python version.
+Here are the folders that you need to remove on MacOS X and Debian Linux
+(with python 2.3):
+
+  - MacOS X: ``/Library/Python/2.3/gamera/toolkits/psaltiki``
+
+  - Debian Linux: ``/usr/lib/python2.3/site-packages/gamera/toolkits/psaltiki``
+
+
+Standalone Scripts
+``````````````````
+
+The standalone scripts are installed into ``/usr/bin`` (linux) or
+``/System/Library/Frameworks/Python.framework/Versions/2.3/bin`` (MacOS X),
+unless you have explicitly chosen a different location with the options 
+``--prefix`` or ``--home`` during installation.
+
+For an uninstall, remove the following scripts:
+
+    - ``psaltiki_recognize.py``
+
+
+Authors
+'''''''
+
+This toolkit is a collaborative work of
+
+  - Christoph Dalitz (Hochschule Niederrhein, Krefeld, Germany)
+  - Georgios Michalakis (Association Stoudion, Poitiers, France)
+  - Christine Pranzas (Hochschule Niederrhein, Krefeld, Germany)

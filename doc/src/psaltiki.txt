@@ -1,0 +1,125 @@
+
+Psaltiki
+========
+
+``Create_PsaltikiPage``
+-----------------------
+
+object **Create_PsaltikiPage** (int *oligon_height* = 0, int *oligon_width* = 0)
+
+
+:Operates on: ``Image`` [OneBit|RGB]
+:Returns: object
+:Category: Psaltiki
+:Defined in: preprocessing.py
+:Author: Daniel Jahns
+
+
+Returns a PsaltikiPage__ class. In the GUI it also creates an icon
+for the object.
+
+.. __: gamera.toolkits.psaltiki.psaltiki_page.PsaltikiPage.html
+
+
+
+
+Preprocessing
+-------------
+
+``correct_rotation``
+````````````````````
+
+``Image`` [OneBit|GreyScale] **correct_rotation** (int *oligon_height* = 0)
+
+
+:Operates on: ``Image`` [OneBit|GreyScale]
+:Returns: ``Image`` [OneBit|GreyScale]
+:Category: Psaltiki/Preprocessing
+:Defined in: preprocessing.py
+:Author: Christoph Dalitz
+
+
+Corrects a possible rotation angle with the aid of skewed projections.
+
+When the image is large, it is temporarily scaled down for performance
+reasons. The parameter *oligon_height* determines how much the image
+is scaled down: when it is larger than 3, the image is scaled down so that
+the resulting oligon height is 2. Thus if you want to suppress the
+downscaling, set *oligon_height* to one or zero.
+
+
+
+``preprocess``
+``````````````
+
+``Image`` [OneBit] **preprocess** (int *speckle_size* = 3, ``Choice`` [median|closing|wspeckle|none] *smoothing_method*, ``bool`` *correct_rotation* = False, ``bool`` *remove_copy_border* = False)
+
+
+:Operates on: ``Image`` [OneBit]
+:Returns: ``Image`` [OneBit]
+:Category: Psaltiki/Preprocessing
+:Defined in: preprocessing.py
+:Author: Christine Pranzas
+
+
+This is only a wrapper function for the other preprocessing plugins.
+It provides a convenient GUI to select preprocessing operations
+and run them all at once.
+
+
+
+``remove_copy_border``
+``````````````````````
+
+``Image`` [OneBit] **remove_copy_border** (``ChoiceString(strict)`` [size|black_area] *feature* = size)
+
+
+:Operates on: ``Image`` [OneBit|GreyScale|RGB]
+:Returns: ``Image`` [OneBit]
+:Category: Psaltiki/Preprocessing
+:Defined in: preprocessing.py
+:Author: Christoph Dalitz
+
+
+Removes large CCs that are possibly black borders from scanning.
+
+Depending on *feature*, large CCs are identified as follows:
+
+ *size*:
+   CCs with a height greater than the 20 times the median height or a width
+   greater than 10 times the median width of all CCs with width/height > 3
+   (this median is an estimator for the *oligon_width*) are removed
+
+ *black_area*:
+   CCs with a black_area greater than 20 times the median black area
+   are removed
+
+
+
+
+``smooth``
+``````````
+
+``Image`` [OneBit] **smooth** (int *speckle_size* = 3, ``Choice`` [median|closing|wspeckle] *filter*)
+
+
+:Operates on: ``Image`` [OneBit]
+:Returns: ``Image`` [OneBit]
+:Category: Psaltiki/Preprocessing
+:Defined in: preprocessing.py
+:Author: Christoph Dalitz
+
+
+Smooth the image by first despeckling with *speckle_size* and then
+filtering out white speckles. The despeckling can be skipped by giving a
+zero speckle size. The filtering method depends on the
+option *filter*:
+
+  0: applies a median filter (*rank(5)*)
+
+  1: closes the image with a 3x3 black structuring element.
+
+  2: like despeckle, but with white speckles
+
+
+

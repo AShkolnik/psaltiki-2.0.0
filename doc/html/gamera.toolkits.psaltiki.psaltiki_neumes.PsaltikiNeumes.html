@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>class PsaltikiNeumes</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="class-psaltikineumes">
+<h1 class="title">class <tt class="docutils literal"><span class="pre">PsaltikiNeumes</span></tt></h1>
+
+<p><strong>Last modified</strong>: February 17, 2010</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#psaltikineumes" id="id4"><tt class="docutils literal"><span class="pre">PsaltikiNeumes</span></tt></a><ul>
+<li><a class="reference internal" href="#init" id="id5"><tt class="docutils literal"><span class="pre">__init__</span></tt></a></li>
+<li><a class="reference internal" href="#create-grouping-list" id="id6"><tt class="docutils literal"><span class="pre">create_grouping_list</span></tt></a></li>
+<li><a class="reference internal" href="#correct-outliers" id="id7"><tt class="docutils literal"><span class="pre">correct_outliers</span></tt></a></li>
+<li><a class="reference internal" href="#coloring-groups" id="id8"><tt class="docutils literal"><span class="pre">coloring_groups</span></tt></a></li>
+<li><a class="reference internal" href="#get-chant-code" id="id9"><tt class="docutils literal"><span class="pre">get_chant_code</span></tt></a></li>
+<li><a class="reference internal" href="#get-txt-output" id="id10"><tt class="docutils literal"><span class="pre">get_txt_output</span></tt></a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="section" id="psaltikineumes">
+<h1><a class="toc-backref" href="#id4"><tt class="docutils literal"><span class="pre">PsaltikiNeumes</span></tt></a></h1>
+<p>In module <tt class="docutils literal"><span class="pre">gamera.toolkits.psaltiki.psaltiki_neumes</span></tt></p>
+<p><p>Groups neumes and can create output code. The grouping is done
+automatically in the constructor and the result is stored in the following
+properties:</p>
+<blockquote>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">self.baselist</span></tt></dt>
+<dd>nested list <em>glyph[line][neume]</em> containing all neumes per line</dd>
+<dt><tt class="docutils literal"><span class="pre">self.grouping_list</span></tt></dt>
+<dd>nested list <em>glyph[line][group][neume]</em> containing all neumes per group
+and line as created by <a class="reference external" href="#create-grouping-list">create_grouping_list</a></dd>
+</dl>
+</blockquote>
+</p>
+<div class="section" id="init">
+<h2><a class="toc-backref" href="#id5"><tt class="docutils literal"><span class="pre">__init__</span></tt></a></h2>
+<p>Constructs and returns a <em>PsaltikiNeumes</em> object. Signature:</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">__init__(image,</span> <span class="pre">ccs,oligon_height,</span> <span class="pre">oligon_height,baselines,debug,outfile,group_file)</span></tt></blockquote>
+<p>Parameter:</p>
+<blockquote>
+<dl class="docutils">
+<dt><em>ccs</em></dt>
+<dd>The connected components must already be classified.</dd>
+<dt><em>oligon_width, oligon_height, baselines</em></dt>
+<dd>Shall be taken from the values computed by PsaltikiPage.</dd>
+<dt><em>debug</em></dt>
+<dd>for creation of debugging information: 0 = no info, 1 = progress info</dd>
+<dt><em>group_file</em></dt>
+<dd>text file controling the grouping of two original neumes. See the
+<a class="reference external" href="usermanual.html#neume-combinations">user's manual</a> for the file format specification.</dd>
+</dl>
+</blockquote>
+</div>
+<div class="section" id="create-grouping-list">
+<h2><a class="toc-backref" href="#id6"><tt class="docutils literal"><span class="pre">create_grouping_list</span></tt></a></h2>
+<p>Organizes the neumes in a nested list. It is called automatically
+in the constructor.</p>
+<p>The lowest level list represents the neumes of one neume group, these are
+organized in a list representing a line of neumes and the highest level
+list represents all lines.</p>
+<p>The primary, the martyria and the chronos neumes will be the first element
+of each group in the grouping list. Each of those neumes opens its own
+group on its baseline. If the primary glyph does not lie on the baseline,
+then it is a secondary element. The consequence for this is, that the
+classified name will be renamed and the connected component will be
+specified again.</p>
+</div>
+<div class="section" id="correct-outliers">
+<h2><a class="toc-backref" href="#id7"><tt class="docutils literal"><span class="pre">correct_outliers</span></tt></a></h2>
+<p>Examines all glyphs that have an <em>y</em>- or <em>x</em>-distance greater than
+a given threshold from the closest other glyph in the same group. When the
+outlier is closer to the next or previous group, it is moved to that group;
+otherwise it is removed. The function only affects <em>self.grouping_list</em>,
+but not <em>self.baselist</em>.</p>
+<p>Signature:</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">correct_outliers(distx=4,</span> <span class="pre">disty=4)</span></tt></blockquote>
+<p>with</p>
+<blockquote>
+<p><em>distx</em>, <em>disty</em></p>
+<blockquote>
+distance measured in units of <em>oligon_height</em></blockquote>
+</blockquote>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">This function does not care about the general grouping scheme
+for secondary nuemes (like, e.g., secondaryright). It only tries
+to fix some grossly oulying neumes.</p>
+</div>
+</div>
+<div class="section" id="coloring-groups">
+<h2><a class="toc-backref" href="#id8"><tt class="docutils literal"><span class="pre">coloring_groups</span></tt></a></h2>
+<p>Returns an RGB image in which all neumes belonging to the same group
+are highlighted in the same color. Additionally the detected baselines are
+drawn. Thus you can see easily which neumes are grouped together.</p>
+</div>
+<div class="section" id="get-chant-code">
+<h2><a class="toc-backref" href="#id9"><tt class="docutils literal"><span class="pre">get_chant_code</span></tt></a></h2>
+<p>Returns the recognized psaltiki chant in the code specified in
+the <a class="reference external" href="usermanual.html#the-output-code">user's manual</a>.</p>
+</div>
+<div class="section" id="get-txt-output">
+<h2><a class="toc-backref" href="#id10"><tt class="docutils literal"><span class="pre">get_txt_output</span></tt></a></h2>
+<p>Returns a string representing the recognized symbols.</p>
+<p>Each symbol is printed in a separate line of the form</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">groupnumber</span> <span class="pre">(ul_xpos,ul_ypos,lr_xpos,lr_ypos)</span> <span class="pre">neumename</span></tt></blockquote>
+<p>Groups are sorted by baseline and offset_x (ul_xpos).</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<span class="raw-html"><a href="http://sourceforge.net/projects/gamera"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=99328&type=13" width="120" height="30" border="0" alt="Get Gamera at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a></span>
+</div>
+</body>
+</html>

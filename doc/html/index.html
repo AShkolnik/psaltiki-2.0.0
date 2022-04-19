@@ -1,0 +1,328 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Psaltiki Recognition Toolkit for Gamera</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="psaltiki-recognition-toolkit-for-gamera">
+<h1 class="title">Psaltiki Recognition Toolkit for Gamera</h1>
+
+<p><strong>Last modified</strong>: February 17, 2010</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#overview" id="id5">Overview</a><ul>
+<li><a class="reference internal" href="#the-recognition-process" id="id6">The Recognition Process</a></li>
+<li><a class="reference internal" href="#provided-components" id="id7">Provided Components</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#user-s-manual" id="id8">User's Manual</a></li>
+<li><a class="reference internal" href="#developer-s-manual" id="id9">Developer's Manual</a></li>
+<li><a class="reference internal" href="#installation" id="id10">Installation</a><ul>
+<li><a class="reference internal" href="#prerequisites" id="id11">Prerequisites</a></li>
+<li><a class="reference internal" href="#building-and-installing" id="id12">Building and Installing</a></li>
+<li><a class="reference internal" href="#installing-without-root-privileges" id="id13">Installing without root privileges</a></li>
+<li><a class="reference internal" href="#uninstallation" id="id14">Uninstallation</a><ul>
+<li><a class="reference internal" href="#python-library-files" id="id15">Python Library Files</a></li>
+<li><a class="reference internal" href="#standalone-scripts" id="id16">Standalone Scripts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#authors" id="id17">Authors</a></li>
+</ul>
+</div>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field"><th class="field-name">Editor:</th><td class="field-body">Christoph Dalitz</td>
+</tr>
+<tr class="field"><th class="field-name">Version:</th><td class="field-body">1.1.2</td>
+</tr>
+</tbody>
+</table>
+<p>See the <a class="reference external" href="http://psaltiki4gamera.sourceforge.net/">project home page</a> for general information and file releases or
+the <a class="reference external" href="http://sourceforge.net/projects/psaltiki4gamera/">SourceForge project page</a> for access to CVS.</p>
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id5">Overview</a></h1>
+<p>The aim of the <em>Psaltiki Recognition Toolkit</em> is to recognize historic
+prints of contemporary psaltic notation, a neumatic notation system for
+Byzantine music developed in the 19th century in Constantinople.</p>
+<p>This toolkit provides</p>
+<ul class="simple">
+<li>ready to use recognition programs for training neumes and the actual
+recognition based on the trained data</li>
+<li>python library functions for building own Psaltiki recognition applications</li>
+</ul>
+<p>It is based on and requires the <a class="reference external" href="http://gamera.sourceforge.net/">Gamera framework</a> for document analysis
+and recognition.</p>
+<div class="section" id="the-recognition-process">
+<h2><a class="toc-backref" href="#id6">The Recognition Process</a></h2>
+<p><em>Optical Psaltiki Recognition</em> means the extraction of a
+machine readable encoding from bitmap images of historic Psaltiki
+prints. This process typically consists of the following steps:</p>
+<dl class="docutils">
+<dt><strong>Preprocessing:</strong></dt>
+<dd>Includes image enhancement techniques (like smoothing or skew
+correction) and lyrics removal.</dd>
+<dt><strong>Segmentation:</strong></dt>
+<dd>Separation of the individual neumes symbols and identification
+of lines.</dd>
+<dt><strong>Classification:</strong></dt>
+<dd>Identification of the individual neumes symbols.</dd>
+<dt><strong>Postprocessing:</strong></dt>
+<dd>Although the classification step yields the neume type, this information
+needs further semantic interpretation, because the musical meaning depends
+on the local position of a neume on the page and its neighbouring neumes.
+The resulting musical meaning is encoded in some way and given out as the
+result of the recognition process.</dd>
+</dl>
+<p>Some methods for these steps are supplied in this toolkit, some are already
+part of the core gamera distribution as shown in the following table:</p>
+<blockquote>
+<table border="1" class="docutils">
+<colgroup>
+<col width="52%" />
+<col width="48%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head">Recognition step</th>
+<th class="head">Provided by</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td>Smoothing,
+Copy border removal,
+Skew correction,</td>
+<td>Psaltiki toolkit</td>
+</tr>
+<tr><td>Segmentation</td>
+<td>Gamera: CC analysis</td>
+</tr>
+<tr><td>Classification</td>
+<td>Gamera: kNN classifier</td>
+</tr>
+<tr><td>Semantic interpretation,
+music code output</td>
+<td>Psaltiki toolkit</td>
+</tr>
+</tbody>
+</table>
+</blockquote>
+</div>
+<div class="section" id="provided-components">
+<h2><a class="toc-backref" href="#id7">Provided Components</a></h2>
+<p>The toolkit consists of Gamera plugin image functions and
+some end user applications.</p>
+<p>The plugins are for preprocessing like image enhancement and are documented in
+the <a class="reference external" href="plugins.html">plugin reference</a>.</p>
+<p>The end user applications are</p>
+<ul class="simple">
+<li>a graphical user interface for starting an interactive training session
+for neumes</li>
+<li><em>psaltiki_recognize</em> for automatic recognition of a music image</li>
+</ul>
+</div>
+</div>
+<div class="section" id="user-s-manual">
+<h1><a class="toc-backref" href="#id8">User's Manual</a></h1>
+<p>This documentation is for those, who want to use the toolkit for Psaltiki
+recognition, but are not interested in extending its capabilities beyond the
+adaption to specific neume symbols.</p>
+<ul class="simple">
+<li><a class="reference external" href="usermanual.html">Using the toolkit</a>: gives a step by step explanation both how to
+adapt the recognition for specific prints (<em>training</em>) and
+how to apply this to Psaltiki recognition</li>
+<li><a class="reference external" href="plugins.html">Plugins</a>: Reference for the plugin functions shipped with this toolkit.
+These can also be called from the image context menu in the Gamera GUI.</li>
+</ul>
+</div>
+<div class="section" id="developer-s-manual">
+<h1><a class="toc-backref" href="#id9">Developer's Manual</a></h1>
+<p>This documentation is for those who want to use the toolkit as a library
+for writing custom recognition scripts. Moreover it describes some
+common tweaks like the generation of a different output encoding.</p>
+<ul>
+<li><p class="first"><a class="reference external" href="developermanual.html">Developer's manual</a>: describes how to extend the toolkit</p>
+</li>
+<li><dl class="first docutils">
+<dt>Reference for the classes defined in this toolkit:</dt>
+<dd><ul class="first last simple">
+<li><a class="reference external" href="gamera.toolkits.psaltiki.psaltiki_page.PsaltikiPage.html">PsaltikiPage</a> can be used for detecting baselines and the characteristic
+dimensions</li>
+<li><a class="reference external" href="gamera.toolkits.psaltiki.psaltiki_neumes.PsaltikiNeumes.html">PsaltikiNeumes</a> is for semantic postprocessing and can generate an
+output encoding</li>
+</ul>
+</dd>
+</dl>
+</li>
+</ul>
+</div>
+<div class="section" id="installation">
+<h1><a class="toc-backref" href="#id10">Installation</a></h1>
+<p>The following installation instructions describe how to install the toolkit
+from the sources, eg. from a curren cvs snapshot. They should work for any
+Unix like operating system (MacOS X, Linux, Solaris, FreeBSD, ...).
+On Windows they require that <a class="reference external" href="http://mingw.org/">Mingw32</a> is installed.
+Alternatively you can use the binary installers from the project home page;
+these however are restricted to specific versions of Python and wxPython.</p>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id11">Prerequisites</a></h2>
+<p>You will need a working installation of Gamera 3.x. See the
+<a class="reference external" href="http://gamera.sourceforge.net/">Gamera website</a> for details.</p>
+<p>If you want to generate the documentation, you will need two additional
+third-party Python libraries:</p>
+<blockquote>
+<ul class="simple">
+<li><a class="reference external" href="http://docutils.sourceforge.net/">docutils</a> (version 0.3 or later) for handling reStructuredText documents.</li>
+<li><a class="reference external" href="http://silvercity.sourceforge.net/">SilverCity</a> (version 0.9 or later) or <a class="reference external" href="http://pygments.org/">pygments</a> for colorizing source code.</li>
+</ul>
+</blockquote>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">It is generally not necessary to generate the documentation
+because it is included in file releases of the toolkit.</p>
+</div>
+</div>
+<div class="section" id="building-and-installing">
+<h2><a class="toc-backref" href="#id12">Building and Installing</a></h2>
+<p>To build and install this toolkit on Linux or MacOS X, go to the base
+directory of the toolkit distribution and run the <tt class="docutils literal"><span class="pre">setup.py</span></tt> script as
+follows:</p>
+<pre class="literal-block">
+# 1) compile
+python setup.py build
+
+# 2) install
+#    a) on MacOS X
+sudo python setup.py install
+#    b) on Linux
+su root -c setup.py install
+</pre>
+<p>Command 1) compiles the toolkit from the sources and command 2) installs
+it. As the latter requires
+root privilegue, you need to use <tt class="docutils literal"><span class="pre">sudo</span></tt> (vanilla MacOS X configuration)
+or <tt class="docutils literal"><span class="pre">su</span> <span class="pre">root</span> <span class="pre">-c</span></tt> (vanilla Linux configuration).</p>
+<p>On Windows you must run the following commands from the Msys shell prompt
+instead:</p>
+<pre class="literal-block">
+# 1) compile
+python setup.py build --compiler=mingw32
+
+# 2) build an installer and run it
+python setup.py build --compiler=mingw32 bdist_wininst
+dist/psaltiki4gamera-X.X.X-win32.exe
+</pre>
+<p>Note that the standalone scripts are installed into <tt class="docutils literal"><span class="pre">/usr/bin</span></tt> on Linux,
+but into <tt class="docutils literal"><span class="pre">/System/Library/Frameworks/Python.framework/Versions/2.3/bin</span></tt>
+on MacOS X. As the latter directory is not in the standard search path,
+you could either add it to your search path, or install the scripts
+additionally into <tt class="docutils literal"><span class="pre">/usr/bin</span></tt> on MacOS X with:</p>
+<pre class="literal-block">
+# install scripts into standard path (MacOS X only)
+sudo python setup.py install_scripts -d /usr/bin
+</pre>
+<p>To regenerate the documentation, go to the <tt class="docutils literal"><span class="pre">doc</span></tt> directory and run the
+<tt class="docutils literal"><span class="pre">gendoc.py</span></tt> script. The output will be placed in the <tt class="docutils literal"><span class="pre">doc/html/</span></tt>
+directory.  The contents of this directory can be placed on a webserver
+for convenient viewing.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Before building the documentation you must install the
+toolkit. Otherwise <tt class="docutils literal"><span class="pre">gendoc.py</span></tt> will not find the plugin documentation.</p>
+</div>
+</div>
+<div class="section" id="installing-without-root-privileges">
+<h2><a class="toc-backref" href="#id13">Installing without root privileges</a></h2>
+<p>The above installation with <tt class="docutils literal"><span class="pre">python</span> <span class="pre">setup.py</span> <span class="pre">install</span></tt> will install
+the toolkit system wide and thus requires root privileges. If you do
+not have root access (Linux) or are no sudoer (MacOS X), you can
+install the Psaltiki toolkit into your home directory. Note however
+that this also requires that gamera is installed into your home directory.
+It is currently not possible to install gamera globally and only toolkits
+locally.</p>
+<p>Here are the steps to install both gamera and the Psaltiki toolkit into
+<tt class="docutils literal"><span class="pre">~/python</span></tt>:</p>
+<pre class="literal-block">
+# install gamera locally
+mkdir ~/python
+python setup.py install --prefix=~/python
+
+# build and install the Psaltiki toolkit locally
+export CFLAGS=-I~/python/include/python2.3/gamera
+python setup.py build
+python setup.py install --prefix=~/python
+</pre>
+<p>Moreover you should set the following environment variables in your
+<tt class="docutils literal"><span class="pre">~/.profile</span></tt>:</p>
+<pre class="literal-block">
+# search path for python modules
+export PYTHONPATH=~/python/lib/python
+
+# search path for executables (eg. gamera_gui)
+export PATH=~/python/bin:$PATH
+</pre>
+</div>
+<div class="section" id="uninstallation">
+<h2><a class="toc-backref" href="#id14">Uninstallation</a></h2>
+<p>The installation uses the Python <em>distutils</em>, which do not support
+uninstallation on Linux or MacOS X. Thus you need to remove the
+installed files manually:</p>
+<ul class="simple">
+<li>the installed Python library files of the toolkit</li>
+<li>the installed standalone scripts</li>
+</ul>
+<p>On Windows, you can use the uninstaller from &quot;System Settings/Software&quot;.</p>
+<div class="section" id="python-library-files">
+<h3><a class="toc-backref" href="#id15">Python Library Files</a></h3>
+<p>All python library files of this toolkit are installed into the
+<tt class="docutils literal"><span class="pre">gamera/toolkits/psaltiki</span></tt> subdirectory of the Python library folder.
+Thus it is sufficient to remove this directory for an uninstallation.</p>
+<p>Where the python library folder is depends on your system and python version.
+Here are the folders that you need to remove on MacOS X and Debian Linux
+(with python 2.3):</p>
+<blockquote>
+<ul class="simple">
+<li>MacOS X: <tt class="docutils literal"><span class="pre">/Library/Python/2.3/gamera/toolkits/psaltiki</span></tt></li>
+<li>Debian Linux: <tt class="docutils literal"><span class="pre">/usr/lib/python2.3/site-packages/gamera/toolkits/psaltiki</span></tt></li>
+</ul>
+</blockquote>
+</div>
+<div class="section" id="standalone-scripts">
+<h3><a class="toc-backref" href="#id16">Standalone Scripts</a></h3>
+<p>The standalone scripts are installed into <tt class="docutils literal"><span class="pre">/usr/bin</span></tt> (linux) or
+<tt class="docutils literal"><span class="pre">/System/Library/Frameworks/Python.framework/Versions/2.3/bin</span></tt> (MacOS X),
+unless you have explicitly chosen a different location with the options
+<tt class="docutils literal"><span class="pre">--prefix</span></tt> or <tt class="docutils literal"><span class="pre">--home</span></tt> during installation.</p>
+<p>For an uninstall, remove the following scripts:</p>
+<blockquote>
+<ul class="simple">
+<li><tt class="docutils literal"><span class="pre">psaltiki_recognize.py</span></tt></li>
+</ul>
+</blockquote>
+</div>
+</div>
+</div>
+<div class="section" id="authors">
+<h1><a class="toc-backref" href="#id17">Authors</a></h1>
+<p>This toolkit is a collaborative work of</p>
+<blockquote>
+<ul class="simple">
+<li>Christoph Dalitz (Hochschule Niederrhein, Krefeld, Germany)</li>
+<li>Georgios Michalakis (Association Stoudion, Poitiers, France)</li>
+<li>Christine Pranzas (Hochschule Niederrhein, Krefeld, Germany)</li>
+</ul>
+</blockquote>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<span class="raw-html"><a href="http://sourceforge.net/projects/gamera"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=99328&type=13" width="120" height="30" border="0" alt="Get Gamera at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a></span>
+</div>
+</body>
+</html>

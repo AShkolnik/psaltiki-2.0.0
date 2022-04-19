@@ -1,0 +1,448 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="generator" content="Docutils 0.5: http://docutils.sourceforge.net/" />
+<title>Psaltiki Toolkit User's Manual</title>
+<link rel="stylesheet" href="default.css" type="text/css" />
+</head>
+<body>
+<div class="document" id="psaltiki-toolkit-user-s-manual">
+<h1 class="title">Psaltiki Toolkit User's Manual</h1>
+
+<p><strong>Last modified</strong>: March 06, 2007</p>
+<div class="contents topic" id="contents">
+<p class="topic-title first">Contents</p>
+<ul class="simple">
+<li><a class="reference internal" href="#overview" id="id9">Overview</a><ul>
+<li><a class="reference internal" href="#prerequisites" id="id10">Prerequisites</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#training" id="id11">Training</a><ul>
+<li><a class="reference internal" href="#starting-the-training-dialog" id="id12">Starting the Training Dialog</a></li>
+<li><a class="reference internal" href="#preprocessing" id="id13">Preprocessing</a></li>
+<li><a class="reference internal" href="#symbol-names" id="id14">Symbol Names</a></li>
+<li><a class="reference internal" href="#neume-grouping" id="id15">Neume Grouping</a><ul>
+<li><a class="reference internal" href="#broken-symbols" id="id16">Broken Symbols</a></li>
+<li><a class="reference internal" href="#neume-combinations" id="id17">Neume Combinations</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a class="reference internal" href="#recognition" id="id18">Recognition</a><ul>
+<li><a class="reference internal" href="#psaltiki-recognize-py" id="id19">psaltiki_recognize.py</a></li>
+<li><a class="reference internal" href="#the-output-code" id="id20">The Output Code</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#visualization" id="id21">Visualization</a><ul>
+<li><a class="reference internal" href="#debug-images" id="id22">Debug Images</a></li>
+<li><a class="reference internal" href="#in-the-gamera-gui" id="id23">In the Gamera GUI</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p>This documentation is for those, who want to use the toolkit for psaltiki
+recognition, but are not interested in extending its capabilities. If you
+want to write custom recognition scripts, see the <a class="reference external" href="developermanual.html">developer's manual</a>.</p>
+<div class="section" id="overview">
+<h1><a class="toc-backref" href="#id9">Overview</a></h1>
+<p>As each historic psaltiki print uses different neume symbols, you
+must first train the system with some pages of music and then
+use this training data for subsequent recognition:</p>
+<img alt="images/overview.png" src="images/overview.png" />
+<p>Hence the proper use of this toolkit requires two steps:</p>
+<ul class="simple">
+<li>training of the neume symbols on representative music images.
+This step is interactive.</li>
+<li>recognize other psaltiki images with the aid of this training data.
+This step usually runs automatically without user interaction.</li>
+</ul>
+<div class="section" id="prerequisites">
+<h2><a class="toc-backref" href="#id10">Prerequisites</a></h2>
+<p>The recognition assumes that the page layout is in a single column.
+If you have scanned in to adjacent pages into a single image, resulting
+in a two column layout, you must first split the image into two.</p>
+<p>As automatic lyrics removal is not yet imlemented, you must currently
+also remove the lyrics from the image. this is however necessary only for
+the recognition step, but not strictly for the training step, because
+you can simply ignore all lyrics during training.</p>
+</div>
+</div>
+<div class="section" id="training">
+<h1><a class="toc-backref" href="#id11">Training</a></h1>
+<div class="section" id="starting-the-training-dialog">
+<h2><a class="toc-backref" href="#id12">Starting the Training Dialog</a></h2>
+<p>The training dialog is started from the Gamera GUI:</p>
+<ul class="simple">
+<li>import the Psaltiki toolkit with
+<em>Toolkits/psaltiki/Import 'psaltiki' toolkit</em>. This will create an
+icon named <em>psaltiki</em> in the object list of the Gamera GUI.</li>
+<li>right click on the psaltiki icon and select the menu
+<em>Train Neumes from Image</em>.</li>
+</ul>
+<img alt="images/training1.png" src="images/training1.png" />
+<p>Gamera will prompt you for an image file and the following additional
+parameter:</p>
+<blockquote>
+<ul class="simple">
+<li>an optional training database file (in <em>.xml</em> format). For the first
+page this will be left empty; for the following pages of the same
+print it will be the file containing the traing data of the previous
+pages.</li>
+<li>on optional file containing all symbol names, one symbol name per line.
+When empty, a default symbol table is used.</li>
+<li>preprocessing options as described in the next section.</li>
+</ul>
+</blockquote>
+<img alt="images/training2.png" src="images/training2.png" />
+<p>After pressing <em>Ok</em>, the training GUI shown above will appear that is
+described in
+detail in the Gamera training tutorial. See the section <a class="reference external" href="usermanual.html#symbol-names">Symbol Names</a> for
+details about the neume naming conventions and how to train uninteresting
+stuff. When you have trained the loaded
+page, save the training data with
+<em>File/Classifier glyphs/Save glyphs in classifier...</em> in an <em>.xml</em> file.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Do not train lyrics, but only neumes. There is currently
+no support for lyrics recognition in the toolkit.</p>
+</div>
+</div>
+<div class="section" id="preprocessing">
+<h2><a class="toc-backref" href="#id13">Preprocessing</a></h2>
+<p>Common image defects like black speckles, small white holes, black copy
+borders or rotation can be improved with the preprocessing routines
+<a class="reference external" href="psaltiki.html#smooth">smooth</a>, <a class="reference external" href="psaltiki.html#remove-copy-border">remove_copy_border</a> and <a class="reference external" href="psaltiki.html#correct-rotation">correct_rotation</a>. In particular
+the <em>smooth</em> plugin does not necessarily improve the image quality, because
+its filling of white holes can inadvertantly join separate neumes.</p>
+<p>Thus you should always test the optimal preprocessing options for each
+print, which can be done by loading the image into the Gamera GUI, converting
+it to Onebit (<em>Conversion/to_onebit</em> in the image right click menu) and
+starting the preprocessing plugins from the <em>Psaltiki/Preprocessing</em>
+right click menu.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Whatever your choice of preprocessing routines is,
+make sure you use the same preprocessing for both training
+and recognition.</p>
+</div>
+</div>
+<div class="section" id="symbol-names">
+<h2><a class="toc-backref" href="#id14">Symbol Names</a></h2>
+<p>The toolkit allows for arbitrary neume names. This leads however to the
+problem how the recognition system can identify certain neumes that are
+crucial for the semantic interpretation. To solve this paradoxon, we
+require that the symbol names consist of period delimited strings, as in</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">primary.baseline.oligon</span></tt></blockquote>
+<p>When any of these strings is one of a set of predefined keywords,
+the neume has the meaning given in the table below.  You are free to
+add more modifiers that might be helpful for furhtor custom postprocessing
+of the output code.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="25%" />
+<col width="43%" />
+<col width="32%" />
+</colgroup>
+<thead valign="bottom">
+<tr><th class="head"><strong>Keyword</strong></th>
+<th class="head"><strong>Meaning</strong></th>
+<th class="head"><strong>Comment</strong></th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr><td><tt class="docutils literal"><span class="pre">primary</span></tt></td>
+<td>neume can be primary</td>
+<td>removed in output code
+except for one per
+group</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">baseline</span></tt></td>
+<td>neume defines the baseline
+(typically <em>ison</em> and <em>oligon</em>)</td>
+<td>removed in output code
+(see below)</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">linking</span></tt></td>
+<td>a linking neume that can span
+more than one neume group</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">secondaryright</span></tt></td>
+<td>a secondary neume that always
+belongs to the group to its
+right when it appears on the
+baseline (normally isolated
+secondary neumes on the baseline
+are attached to the group to
+their left)</td>
+<td>removed in output code</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">martyria</span></tt></td>
+<td>a martyria scale neume</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">martyria-fthora</span></tt></td>
+<td>a neume that is a fthora when
+overlapping with a primary neume
+and a martyria when no primary
+neume is above it</td>
+<td>when fthora, removed
+in output code;
+when martyria, replaced
+with <tt class="docutils literal"><span class="pre">martyria</span></tt></td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">chronos</span></tt></td>
+<td>a chronos neume (<em>chi</em>)</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">dot</span></tt></td>
+<td>a dot (<em>hapli</em> or <em>stigmi</em>)</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">gorgon</span></tt></td>
+<td>neume is a gorgon variant</td>
+<td>&nbsp;</td>
+</tr>
+<tr><td><tt class="docutils literal"><span class="pre">trash</span></tt></td>
+<td>symbol is completely ignored</td>
+<td>useful for speckles or
+or other image defects</td>
+</tr>
+</tbody>
+</table>
+<p>The keyword <em>baseline</em> is only necessary when you are using a training
+based baseline detection (option <em>-tb</em> of <a class="reference external" href="#psaltiki-recognize-py">psaltiki_recognize.py</a>). On
+the other hand it does no harm in other baseline detection methods, so
+you can train it anyway.</p>
+</div>
+<div class="section" id="neume-grouping">
+<h2><a class="toc-backref" href="#id15">Neume Grouping</a></h2>
+<div class="section" id="broken-symbols">
+<h3><a class="toc-backref" href="#id16">Broken Symbols</a></h3>
+<p>Gamera allows the training of symbols that are broken into more than
+one component due to printing defects. It requires that you mark the
+respective parts with a rectangle in the image view of the training
+GUI and classify them with the prefix <tt class="docutils literal"><span class="pre">_group.</span></tt> followed by the
+regular symbol name. See the Gamera training tutorial for details.</p>
+<div class="note">
+<p class="first admonition-title">Note</p>
+<p class="last">Training of broken symbols is generally not necessary, when
+there are still enough non broken versions of the same
+symbol in the training images.</p>
+</div>
+</div>
+<div class="section" id="neume-combinations">
+<h3><a class="toc-backref" href="#id17">Neume Combinations</a></h3>
+<p>Theoretically the method for training broken symbols is also applicable
+to symbols purposely broken like the <em>kendimata</em> combination consisting
+of two <em>kendimas</em>. This requires however that the combination is always
+<em>very</em> similar, a condition rarely fulfilled in psaltiki prints. Moreover
+the direkt training of neume groups slows down the training process
+considerably.</p>
+<p>Hence the toolkit offers a different way for identifying neume combinations,
+that is applied <em>after</em> the recognition of the individual neumes. It is
+controled by a simple text file (provided by the user) consisting of
+lines of the following form:</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">neume1,neume2,dist:</span> <span class="pre">neume3</span></tt></blockquote>
+<p>This means that the adjacent neumes <em>neume1</em> and <em>neume2</em> following each
+other in the horizontal direction with a bounding box distance of at most
+<em>dist</em> oligon_heights are to be replaced with the single symbol <em>neume3</em>.
+This file needs to be given to <a class="reference external" href="#psaltiki-recognize-py">psaltiki_recogize.py</a> with the option
+<em>-g</em>.</p>
+<p>When you are using the default symbol table, the file will typically
+look like:</p>
+<pre class="literal-block">
+kendima,kendima,1.0: primary.kendimata
+secondaryright.bareia,hapli,2.0: primary.leima-chronou
+primary.apostrophos,primary.elaphron,1.2: primary.syneches-elphron
+</pre>
+</div>
+</div>
+</div>
+<div class="section" id="recognition">
+<h1><a class="toc-backref" href="#id18">Recognition</a></h1>
+<p>The recognition is not done interactively, but from the command line (shell,
+DOS prompt) with the command <em>psaltiki_recognize.py</em>. This allows for
+processing a whole batch of images without user interactions.</p>
+<p>Before you can use <em>psaltiki_recognize.py</em>, make sure that it can be found
+by your shell with the following command:</p>
+<blockquote>
+<tt class="docutils literal"><span class="pre">psaltiki_recognize.py</span> <span class="pre">-?</span></tt></blockquote>
+<p>If you get a &quot;command not found&quot; error you must add the directory into which
+<em>psaltiki_recognize.py</em> has been installed to your <tt class="docutils literal"><span class="pre">PATH</span></tt> environment
+variable (replace 2.3 with your actual python version, if necessary):</p>
+<blockquote>
+<ul class="simple">
+<li>on Windows this is the <em>Scripts</em> subdirectory of your python install
+directory, e.g. <em>D:\Python23\Scripts</em></li>
+<li>on MacOS X it is
+<em>/System/Library/Frameworks/Python.framework/Versions/2.3/bin</em></li>
+</ul>
+</blockquote>
+<div class="section" id="psaltiki-recognize-py">
+<h2><a class="toc-backref" href="#id19">psaltiki_recognize.py</a></h2>
+<p><em>psaltiki_recognize</em> takes a psaltiki image and a training data file as input
+and creates an encoding of the chant as output. For a full list
+of possible command line options with an explanation, call
+<tt class="docutils literal"><span class="pre">psaltiki_recognize</span> <span class="pre">-?</span></tt>.</p>
+<p>Here is a description of the most important options:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-d</span></tt> <em>file.xml</em></dt>
+<dd>training data file in xml format. When you have used some
+preprocessing options on the training data make sure that
+you apply the same to the input of psaltikit_recognize with
+the options <em>-smooth</em> etc.</dd>
+<dt><tt class="docutils literal"><span class="pre">-g</span></tt> <em>file.txt</em></dt>
+<dd>file containing the grouping information as described in section
+<a class="reference external" href="usermanual.html#neume-combinations">Neume Combinations</a>. When omitted no, grouping (except for
+correcting broken characters) is done.</dd>
+</dl>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-smooth</span></tt>, <tt class="docutils literal"><span class="pre">-smoothopt</span></tt>, <tt class="docutils literal"><span class="pre">-rotate</span></tt>, <tt class="docutils literal"><span class="pre">-border</span></tt></dt>
+<dd>preprocessing options for smoothing, rotation correction and copy border
+removal</dd>
+<dt><tt class="docutils literal"><span class="pre">-o</span></tt> <em>outfile</em></dt>
+<dd>write chant encoding to <em>outfile</em></dd>
+<dt><tt class="docutils literal"><span class="pre">-t</span></tt> <em>file.txt</em></dt>
+<dd>additionally write a text file listing all recognized neumes and
+their position (useful for groundtruthing). It uses the function
+<a class="reference external" href="gamera.toolkits.psaltiki.psaltiki_neumes.PsaltikiNeumes.html#get-txt-output">PsaltikiNeumes::get_txt_output()</a></dd>
+</dl>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">-tb</span></tt></dt>
+<dd>only use the neumes trained as baseline defining neumes for detecting
+the baselines. In general this option is not necessary.</dd>
+<dt><tt class="docutils literal"><span class="pre">-k</span></tt> <em>k</em></dt>
+<dd>value of <em>k</em> in the kNN classifier. Note that a larger value of <em>k</em>
+requires more training symbols.</dd>
+<dt><tt class="docutils literal"><span class="pre">-debug</span></tt> <em>n</em></dt>
+<dd>debug level. When <em>n</em> &gt; 0, progress information are given, when
+<em>n</em> &gt; 1 additional images with the prefix <em>debug-</em> are written to
+the current directory</dd>
+</dl>
+</div>
+<div class="section" id="the-output-code">
+<h2><a class="toc-backref" href="#id20">The Output Code</a></h2>
+<p>The output file written by <em>psaltiki_recognize.py</em> is a human readable
+text file where each line represents a line of neume groups in the
+input image. The neume groups are encoded as follows:</p>
+<blockquote>
+<ul class="simple">
+<li>Groups are enclosed in parentheses.</li>
+<li>Neumes within a group are separated by semicolons.</li>
+<li>Neume groups are separated by spaces.</li>
+<li>Neume names are kept as they are trained, except for the keywords
+<em>baseline</em> and <em>primary</em> which are chopped off.</li>
+<li>When a group contains a primary neume, it is marked with the prefix
+<em>primary.</em> (including the final period). Martyria and chronos groups
+are identifiable as groups containing martyria scale or chronos neumes;
+their prefixes (<em>martyria.</em> or <em>chronos</em>) are kept in the output.</li>
+<li>Coordinates are appended to the neume name in square brackets
+<tt class="docutils literal"><span class="pre">[x,y]</span></tt></li>
+</ul>
+</blockquote>
+<p>The neume coordinates are not absolute coordinates on the entire page
+but with respect to the primary (or martyria or chronos) neume of each
+group in the following coordinate system:</p>
+<blockquote>
+<ul class="simple">
+<li><em>y</em> = 0 on the baseline, <em>x</em> = 0 at the right edge of the primary
+neume bounding box</li>
+<li>the grid unit size is the Oligon height</li>
+<li>the given coordinate is the position of the lower right edge of the
+neume bounding box, except for Gorgons, where the leftmost lower
+edge is used. Note that this results in mostly negative <em>x</em>-coordinates.</li>
+</ul>
+</blockquote>
+<p>Here are some examples for the output code of single neume groups:</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="33%" />
+<col width="67%" />
+</colgroup>
+<tbody valign="top">
+<tr><td><strong>Image of Neume Group</strong></td>
+<td><strong>Output Code</strong></td>
+</tr>
+<tr><td><img alt="images/neumegroup1.png" class="first last" src="images/neumegroup1.png" />
+</td>
+<td><tt class="docutils literal"><span class="pre">(primary.oligon[0,0];kendimata[-3,2];gorgon.mono-gorgon[-5,3])</span></tt></td>
+</tr>
+<tr><td><img alt="images/neumegroup2.png" class="first last" src="images/neumegroup2.png" />
+</td>
+<td><tt class="docutils literal"><span class="pre">(primary.oligon[0,0];linking.heteron[-5,-3];apostrophos[-6,2];</span></tt>
+<tt class="docutils literal"><span class="pre">kendimata[-2,2];gorgon.mono-gorgon[-4,4])</span></tt></td>
+</tr>
+<tr><td><img alt="images/neumegroup3.png" class="first last" src="images/neumegroup3.png" />
+</td>
+<td><tt class="docutils literal"><span class="pre">(martyria.diatonic-hemi-phi[0,-6];letter.small.pa[0,0])</span></tt></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="section" id="visualization">
+<h1><a class="toc-backref" href="#id21">Visualization</a></h1>
+<p>There are two options to cross check the recognition visually for debugging
+or evaluation purposes:</p>
+<blockquote>
+<ul class="simple">
+<li>debug images written by <em>psaltiki_recognize.py</em></li>
+<li>an interactive session with the Gamera GUI</li>
+</ul>
+</blockquote>
+<div class="section" id="debug-images">
+<h2><a class="toc-backref" href="#id22">Debug Images</a></h2>
+<p>With the option <em>-debug 2</em>, <em>psaltiki_recognize.py</em> writes the following
+images to the current working directory:</p>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">debug_groups.png</span></tt></dt>
+<dd>Neumes belonging to the same group are highlighted
+in the same color.</dd>
+<dt><tt class="docutils literal"><span class="pre">debug_neumes.png</span></tt></dt>
+<dd>Neumes recognized as beloning to the same class
+(i.e. they have the same symbol name) are highlighted with the
+same color.</dd>
+<dt><tt class="docutils literal"><span class="pre">debug_neumes_combinations.png</span></tt></dt>
+<dd>Neumes grouped as <a class="reference external" href="#neume-combinations">Neume Combinations</a> are marked red.</dd>
+</dl>
+<dl class="docutils">
+<dt><tt class="docutils literal"><span class="pre">debug_baselines.png</span></tt></dt>
+<dd>Neumes used for baseline detection are hightlighted
+and the resulting baselines shown.</dd>
+<dt><tt class="docutils literal"><span class="pre">debug_characteristic_dimensions.png</span></tt></dt>
+<dd>Shows where the two dimensions <em>oligon_height</em> and
+<em>oligon_width</em> have been detected on the page. See
+<a class="reference external" href="gamera.toolkits.psaltiki.psaltiki_page.PsaltikiPage.html#mark-characteristic-dimensions">PsaltikiPage::mark_characteristic_dimensions</a>.</dd>
+</dl>
+</div>
+<div class="section" id="in-the-gamera-gui">
+<h2><a class="toc-backref" href="#id23">In the Gamera GUI</a></h2>
+<p>Both baseline detection and the measurement of the characteristic dimensions
+can be visualized from the Gamera GUI as follows:</p>
+<blockquote>
+<ul class="simple">
+<li>import the Psaltiki toolkit with
+<em>Toolkits/psaltiki/Import 'psaltiki' toolkit</em></li>
+<li>load an image file, convert it to onebit with <em>Conversion/to_onebit</em>
+and optionally apply some preprocessing methods from the <em>Psaltiki</em>
+right click menu</li>
+<li>right click on the image icon and select
+<em>Psaltiki/Create_PsaltikiPage</em></li>
+</ul>
+</blockquote>
+<p>From the right click menu you can inspect the characteristic dimensions
+and the baselines.</p>
+</div>
+</div>
+</div>
+<div class="footer">
+<hr class="footer" />
+<span class="raw-html"><a href="http://sourceforge.net/projects/gamera"><img src="http://sflogo.sourceforge.net/sflogo.php?group_id=99328&type=13" width="120" height="30" border="0" alt="Get Gamera at SourceForge.net. Fast, secure and Free Open Source software downloads" /></a></span>
+</div>
+</body>
+</html>
