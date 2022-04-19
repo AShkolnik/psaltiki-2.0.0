@@ -25,14 +25,14 @@ import re
 from gamera import toolkit
 
 from gamera.core import *
-import plugins
-from psaltiki_page import PsaltikiPage
+from . import plugins
+from .psaltiki_page import PsaltikiPage
 from gamera.gui import has_gui
 
 if has_gui.has_gui:
     from gamera.gui import var_name
     import wx
-    import psaltiki_module_icon
+    from . import psaltiki_module_icon
 
     class PsaltikiPageModuleIcon(toolkit.CustomIcon):
 
@@ -132,27 +132,27 @@ if has_gui.has_gui:
                     image=load_image(filename)
                     wx.BeginBusyCursor()
                     if opt.corr_rot:
-                        print "rotation correction...",
+                        print("rotation correction...", end=' ')
                         sys.stdout.flush()
                         image=image.correct_rotation()
-                        print "done"
+                        print("done")
                     if image.data.pixel_type != ONEBIT:
                         image = image.to_onebit()
                     if opt.specklesize > 0:
-                        print "despeckling...",
+                        print("despeckling...", end=' ')
                         sys.stdout.flush()
                         image.despeckle(opt.specklesize)
-                        print "done"
+                        print("done")
                     if opt.smooth < 3:
-                        print "smoothing...",
+                        print("smoothing...", end=' ')
                         sys.stdout.flush()
                         image=image.smooth(0,opt.smooth)
-                        print "done"
+                        print("done")
                     if opt.remove_cpy:
-                        print "removing copy borders...",
+                        print("removing copy borders...", end=' ')
                         sys.stdout.flush()
                         image=image.remove_copy_border()
-                        print "done"
+                        print("done")
                     wx.EndBusyCursor()
 
                     # create an instance of the specified PsaltikiPage class
@@ -216,34 +216,34 @@ if has_gui.has_gui:
             wx.BeginBusyCursor()
 
             if opt.corr_rot:
-                print "rotation correction...",
+                print("rotation correction...", end=' ')
                 sys.stdout.flush()
                 image=image.correct_rotation()
-                print "done"
+                print("done")
             if image.data.pixel_type != ONEBIT:
                 image = image.to_onebit()
             if opt.specklesize > 0:
-                print "despeckling...",
+                print("despeckling...", end=' ')
                 sys.stdout.flush()
                 image.despeckle(opt.specklesize)
-                print "done"
+                print("done")
             if opt.smooth < 3:
-                print "smoothing...",
+                print("smoothing...", end=' ')
                 sys.stdout.flush()
                 image=image.smooth(0,opt.smooth)
-                print "done"
+                print("done")
             if opt.remove_cpy:
-                print "removing copy borders...",
+                print("removing copy borders...", end=' ')
                 sys.stdout.flush()
                 image=image.remove_copy_border()
-                print "done"
+                print("done")
             if opt.removelyrics:
-                print "remove lyrics...",
+                print("remove lyrics...", end=' ')
                 sys.stdout.flush()
                 pspage = PsaltikiPage(image)
                 pspage.remove_lyrics()
                 image = pspage.image
-                print "done"
+                print("done")
             wx.EndBusyCursor()
 
 

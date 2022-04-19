@@ -82,13 +82,13 @@ while i < len(sys.argv):
 sys.argv=[]
 
 if opt.imagefile==[]:
-	print "Error! No imagefile found!"
+	print("Error! No imagefile found!")
 	sys.exit(1)
 
 init_gamera()
 
 for imagefile in opt.imagefile:
-	print imagefile
+	print(imagefile)
 	image=load_image(imagefile)
 
 

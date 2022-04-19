@@ -1,3 +1,3 @@
 # here we import all individual plugin modules
 
-import preprocessing
+from . import preprocessing

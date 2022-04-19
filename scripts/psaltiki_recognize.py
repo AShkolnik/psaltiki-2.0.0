@@ -36,7 +36,7 @@ def filter_lyrics(infile,outfile):
     gl_lines=[i for i in range(len(lines)) if lines[i].lstrip()[:7]=="<glyph "]
     endgl_lines=[i for i in range(len(lines)) if lines[i].lstrip()[:8]=="</glyph>"]
     if len(gl_lines)!=len(endgl_lines):
-        print >>sys.stderr,"Error! No correct XML-file given"
+        print("Error! No correct XML-file given", file=sys.stderr)
         sys.exit(1)
 
     f=open(outfile,"w")
@@ -194,7 +194,7 @@ init_gamera()
 # load an image, create a TabStaff object and remove staves
 #
 for img in opt.infile:
-    print img
+    print(img)
 
     image=load_image(img)
     
@@ -208,18 +208,18 @@ for img in opt.infile:
       
         image = image.smooth(opt.smoothopt_specklesize,opt.smoothopt_method)
         if opt.verbose >= 1:
-            print "Smoothing ... done"
+            print("Smoothing ... done")
 
     
     if opt.cor_rot:
         image = image.correct_rotation()
         if opt.verbose >= 1:
-            print "Correct rotation ... done"
+            print("Correct rotation ... done")
 
     if opt.remove_cpy:
         image = image.remove_copy_border()
         if opt.verbose >= 1:
-            print "remove copy border ... done"
+            print("remove copy border ... done")
 
 
     # get all connected components
@@ -230,11 +230,11 @@ for img in opt.infile:
     # (baseline detection, lyrics removal...)
     #
     if opt.verbose >= 1:
-        print"Initialize PsaltikiPage"
+        print("Initialize PsaltikiPage")
     pspage = PsaltikiPage(image)
 
     if len(pspage.baselines)==0:
-        print "Error! No baselines detected!"
+        print("Error! No baselines detected!")
         sys.exit(1)
 
     # if wished, remove lyrics
@@ -253,7 +253,7 @@ for img in opt.infile:
         #
 
         if opt.verbose >= 1:
-            print "Initialize Classifier for lyrics removal "
+            print("Initialize Classifier for lyrics removal ")
         if opt.weightfile=="":    
             classifier=knn.kNNInteractive([], [\
                 'aspect_ratio',\
@@ -331,7 +331,7 @@ for img in opt.infile:
 
 
     if opt.verbose >= 1:
-        print "Initialize Classifier "
+        print("Initialize Classifier ")
     if opt.weightfile=="":    
         classifier=knn.kNNInteractive([], [\
             'aspect_ratio',\
@@ -365,7 +365,7 @@ for img in opt.infile:
     #
 
     if opt.verbose>=1:
-        print "automatically detected groups:", len(added)
+        print("automatically detected groups:", len(added))
 
     ccs=[x for x in ccs if \
          (not x.match_id_name("_group._part.*")) and \
@@ -378,22 +378,22 @@ for img in opt.infile:
         #mark all automatically detected groups.
         picture=image.to_rgb()
         for g in added:
-            print "(%d,%d): %s" % (g.offset_x, g.offset_y, g.id_name[0])
+            print("(%d,%d): %s" % (g.offset_x, g.offset_y, g.id_name[0]))
             picture.highlight(g,RGBPixel(255,0,0))
         picture.save_PNG("debug_automatic_groups.png")
 
     # alternative baseline detection (deprecated) 
     if opt.trainbaseline:
         if opt.verbose >= 1:
-            print "training based baseline detection"
+            print("training based baseline detection")
         pspage.baselines = pspage.find_baselines(classified_ccs=ccs)
     if len(pspage.baselines)==0:
-        print "Error! No baselines detected!"
+        print("Error! No baselines detected!")
         sys.exit(1)
 
     if opt.verbose>=1:
-        print "Oligon_width, oligon_height: ",pspage.oligon_width, pspage.oligon_height
-        print "baselines:",pspage.baselines
+        print("Oligon_width, oligon_height: ",pspage.oligon_width, pspage.oligon_height)
+        print("baselines:",pspage.baselines)
     if opt.verbose>=2:
         pic2=pspage.get_wide_ccs()
         picture=pspage.mark_baselines()
@@ -412,7 +412,7 @@ for img in opt.infile:
     #
 
     if opt.verbose >= 1:
-        print "Initialize Class PsaltikiNeumes"
+        print("Initialize Class PsaltikiNeumes")
     pneumes=PsaltikiNeumes(image,ccs,\
                            pspage.oligon_width,\
                            pspage.oligon_height,\

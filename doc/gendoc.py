@@ -12,11 +12,11 @@ if __name__ == '__main__':
    try:
       from gamera.toolkits.psaltiki.plugins import *
    except ImportError:
-      print "WARNING:"
-      print "The `psaltiki` toolkit must be installed before generating"
-      print "the documentation.  For now, the system will skip generating"
-      print "documentation for the plugins."
-      print
+      print("WARNING:")
+      print("The `psaltiki` toolkit must be installed before generating")
+      print("the documentation.  For now, the system will skip generating")
+      print("documentation for the plugins.")
+      print()
 
    # Step 2:
    # Generate documentation for this toolkit

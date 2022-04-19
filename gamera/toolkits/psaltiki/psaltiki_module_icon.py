@@ -7,7 +7,7 @@ try:
    wxBitmapFromImage = BitmapFromImage
 except:
    from wxPython.wx import wxImageFromStream, wxBitmapFromImage
-import cStringIO, zlib
+import io, zlib
 
 
 def getData():
@@ -57,6 +57,6 @@ def getBitmap():
     return BitmapFromImage(getImage())
 
 def getImage():
-    stream = cStringIO.StringIO(getData())
+    stream = io.StringIO(getData())
     return ImageFromStream(stream)
 
