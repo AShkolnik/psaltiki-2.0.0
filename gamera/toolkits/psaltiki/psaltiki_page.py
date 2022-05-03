@@ -35,7 +35,7 @@ Important properties that are computed in the constructor:
     a copy of the input image
 """
 
-	class PsaltikiPageIcon(toolkit.CustomIcon):
+    class PsaltikiPageIcon(toolkit.CustomIcon):
         removed_lyrics=False
 
         def get_icon():
@@ -63,12 +63,12 @@ Important properties that are computed in the constructor:
             info_menu.Append(wx.NewId(), "Class instance: %s"\
                     % str(self.data.__class__).\
                     split(".")[-1])
-			info_menu.AppendSeparator()
+            info_menu.AppendSeparator()
 			
 			# call characteristic_dimensions function
 			# and add the result in 'Info' menu
-			chara_values=[]
-			chara_values=[self.data.oligon_width,self.data.oligon_height]
+            chara_values=[]
+            chara_values=[self.data.oligon_width,self.data.oligon_height]
             if len(chara_values) > 0:
                 info_menu.Append(wx.NewId(),"Oligon heigth: %d" % chara_values[1])
                 info_menu.Append(wx.NewId(),"Oligon width: %d" % chara_values[0])
@@ -138,14 +138,14 @@ Important properties that are computed in the constructor:
         def call_show_chara_dimensions(self, event):
             self._shell.run("%s.gui_show_chara_dimensions()" % self.label)
 
-		def call_show_original_image(self, event):
-			self._shell.run("%s.fullimage.display()" % self.label)
+        def call_show_original_image(self, event):
+            self._shell.run("%s.fullimage.display()" % self.label)
             
         def call_show_image(self, event):
-			self._shell.run("%s.image.display()" % self.label)
+            self._shell.run("%s.image.display()" % self.label)
 		
-		def call_copy_original_image(self, event):
-			img_name=var_name.get(self.label + "_image",\
+        def call_copy_original_image(self, event):
+            img_name=var_name.get(self.label + "_image",\
                     self._shell.locals)
 
             if img_name is not None:
@@ -153,7 +153,7 @@ Important properties that are computed in the constructor:
                         % (img_name, self.label))
                 
         def call_copy_image(self, event):
-			img_name=var_name.get(self.label + "_image",\
+            img_name=var_name.get(self.label + "_image",\
                     self._shell.locals)
 
             if img_name is not None:
@@ -202,7 +202,7 @@ with
         self.find_text=[]
         self.character_height = None
         if has_gui.has_gui:
-			self.PsaltikiPageIcon.register()
+            self.PsaltikiPageIcon.register()
 
 #--------------------------------------------------------------------
 
@@ -451,21 +451,21 @@ is left after filtering, [0,0] is returned.
             return [oligon_width, oligon_height]  
 #---------------------------------------------------------------------
 
-	def gui_show_baselines(self):
+    def gui_show_baselines(self):
         """Only for internal use in the GUI: display image with colored staves.
 """
-		if has_gui.has_gui:
-    		self.PsaltikiPage_sb = self.mark_baselines()
-    		self.PsaltikiPage_sb.display()
+        if has_gui.has_gui:
+            self.PsaltikiPage_sb = self.mark_baselines()
+            self.PsaltikiPage_sb.display()
     		
 #----------------------------------------------------------------------------
     
     def gui_show_chara_dimensions(self):
-	    """Shows the charateristic dimensions in the GUI."""
-    
-    	if has_gui.has_gui:
-    		self.PsaltikiPage_cd = self.mark_characteristic_dimensions()
-			self.PsaltikiPage_cd.display()
+        """Shows the charateristic dimensions in the GUI."""
+
+        if has_gui.has_gui:
+            self.PsaltikiPage_cd = self.mark_characteristic_dimensions()
+            self.PsaltikiPage_cd.display()
 
 
 #----------------------------------------------------------------------------
@@ -714,14 +714,14 @@ Parameters:
         if len(components)!=0:
             character_height=components[len(components)/2].height
         else:
-            print "############# Error! No character height found!"
+            print ("############# Error! No character height found!")
             sys.exit(1)
         self.character_height = character_height
             
         if debug>1:
             
-            print "character_height:", character_height
-            print "oligon_wight,oligon_height",self.oligon_width,self.oligon_height
+            print ("character_height:", character_height)
+            print ("oligon_wight,oligon_height",self.oligon_width,self.oligon_height)
         
         for i in range(len(self.find_text)):
             self.text_components.append([])
@@ -1112,8 +1112,8 @@ Parameters:
         if has_gui.has_gui:
             if self.text_components==[]:
                 self.remove_lyrics()
-           	self.PsaltikiPage_sl = self.mark_lyrics()
-    		self.PsaltikiPage_sl.display()
+            self.PsaltikiPage_sl = self.mark_lyrics()
+            self.PsaltikiPage_sl.display()
 
 
 #--------------------------------------------------------------
@@ -1148,8 +1148,8 @@ Parameters:
         if has_gui.has_gui:
             if self.text_components==[]:
                 self.remove_lyrics()
-    		self.PsaltikiPage_sl = self.mark_lyrics_debug()
-    		self.PsaltikiPage_sl.display()
+            self.PsaltikiPage_sl = self.mark_lyrics_debug()
+            self.PsaltikiPage_sl.display()
 
 #--------------------------------------------------------------
 
@@ -1160,9 +1160,9 @@ Parameters:
 
             dialog=Args([FileOpen("Trainfile (optional)", "", "*.*")],\
                          "Lyrics removal")
-			params=dialog.show()
+            params=dialog.show()
 
-			
+            
             if params[0] != None:
                         filename=params[0]
                         #

@@ -426,7 +426,7 @@ specified again. """
                 if i!=-1:
                     bl_list[i].append(dot)                           
                     
-		return grouping_list
+        return grouping_list
 
 #-------------------------------------------------------
     def correct_outliers(self, distx=4, disty=4):
@@ -524,7 +524,7 @@ with
                 if len(outliers) > 0:
                     for n in outliers:
                         if self.debug>0:
-                            print "removing outlier", n.get_main_id(), "with top =", n.ul_y, "bot =", n.ll_y, "versus cluster top =", nc.top, "bot =", nc.bot
+                            print ("removing outlier", n.get_main_id(), "with top =", n.ul_y, "bot =", n.ll_y, "versus cluster top =", nc.top, "bot =", nc.bot)
                         group.remove(n)
                         removedneumes.append(n)
             # check whether there is some other group to which
@@ -548,7 +548,7 @@ with
                     if closestgroup:
                         closestgroup.append(n)
                         if self.debug>0:
-                            print "outlier", n.get_main_id(), "with top =", n.ul_y, "bot =", n.ll_y, "attached to different group"
+                            print ("outlier", n.get_main_id(), "with top =", n.ul_y, "bot =", n.ll_y, "attached to different group")
 
 #-------------------------------------------------------
     def coloring_groups(self):
@@ -587,7 +587,7 @@ drawn. Thus you can see easily which neumes are grouped together.
             img=None
         if(self.group_file!="" and self.group_file!=None):
             if self.debug>=1:
-                print "Start pregrouping ..."
+                print ("Start pregrouping ...")
             f=open(self.group_file,"r")
             pregr_list=[]
             pregr_file=f.readlines()
@@ -684,10 +684,10 @@ the `user's manual`__.
 """
         chant_code = ""
         if self.debug>=1:
-            print "Generating chant code ... "
+            print ("Generating chant code ... ")
             
-    	for bl,bl_list in enumerate(self.grouping_list):
-			for j,gr_list in enumerate(bl_list):
+        for bl,bl_list in enumerate(self.grouping_list):
+            for j,gr_list in enumerate(bl_list):
                 xr_ref=gr_list[0].lr_x
                 chant_code+="("
                 for i,glyph in enumerate(gr_list):
@@ -706,7 +706,7 @@ the `user's manual`__.
                     chant_code +=" "
             chant_code +="\n"
         if self.debug >=1:
-            print "finished"
+            print ("finished")
         return chant_code
             
   
