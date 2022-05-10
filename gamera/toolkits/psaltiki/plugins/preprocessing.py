@@ -25,6 +25,7 @@ import time
 from gamera import toolkit
 from gamera.plugin import *
 from gamera.args import *
+# war auskommentiert
 #from gamera.toolkits.psaltiki.psaltiki_page import PsaltikiPage
 import _preprocessing
 
