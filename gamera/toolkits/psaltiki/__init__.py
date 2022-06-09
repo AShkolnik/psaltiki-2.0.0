@@ -124,7 +124,7 @@ if has_gui.has_gui:
                     # choose a name for the variable in
                     # the GUI
                     iconname=var_name.get("psaltiki", self._shell.locals)
-                    if iconname is "" or iconname is None:
+                    if iconname == "" or iconname is None:
                         return
 
                     # load the image and do the preprocessing as wished
