@@ -30,23 +30,23 @@ from os.path import *
 
 
 def filter_lyrics(infile,outfile):
-    f=open(infile,"r")
-    lines=f.readlines()
+    f = open(infile,"r")
+    lines = f.readlines()
     f.close()
-    gl_lines=[i for i in range(len(lines)) if lines[i].lstrip()[:7]=="<glyph "]
-    endgl_lines=[i for i in range(len(lines)) if lines[i].lstrip()[:8]=="</glyph>"]
-    if len(gl_lines)!=len(endgl_lines):
+    gl_lines = [i for i in range(len(lines)) if lines[i].lstrip()[:7]=="<glyph "]
+    endgl_lines = [i for i in range(len(lines)) if lines[i].lstrip()[:8]=="</glyph>"]
+    if len(gl_lines) != len(endgl_lines):
         print("Error! No correct XML-file given", file=sys.stderr)
         sys.exit(1)
 
-    f=open(outfile,"w")
+    f = open(outfile,"w")
     f.write(''.join(lines[:gl_lines[0]]))
     for i in range(len(gl_lines)):
-        mylines=lines[gl_lines[i]:endgl_lines[i]+1]
-        islyric=False
+        mylines = lines[gl_lines[i]:endgl_lines[i]+1]
+        islyric = False
         for line in mylines:
             if '<id name="lyrics"' in line:
-                islyric=True
+                islyric = True
                 break
         if not islyric:
             f.write(''.join(mylines))
@@ -60,26 +60,26 @@ def filter_lyrics(infile,outfile):
 #
 class c_opt:
 
-    infile = []
-    outfile = ""
-    trainfile = ""
-    grouping_file=""
-    txt_file=""
-    temp_xml=""
-    onlines = 0
-    verbose=0 
-    nlines = 0
-    trainbaseline = False
-    headline=False
-    weightfile=""
-    num_k = 1
-    lr=False
-    lrt=False
-    smooth = False
-    smoothopt_specklesize = 3
-    smoothopt_method = 0
-    cor_rot = False
-    remove_cpy = False
+    infile                  = []
+    outfile                 = ""
+    trainfile               = ""
+    grouping_file           = ""
+    txt_file                = ""
+    temp_xml                = ""
+    onlines                 = 0
+    verbose                 = 0 
+    nlines                  = 0
+    trainbaseline           = False
+    headline                = False
+    weightfile              = ""
+    num_k                   = 1
+    lr                      = False
+    lrt                     = False
+    smooth                  = False
+    smoothopt_specklesize   = 3
+    smoothopt_method        = 0
+    cor_rot                 = False
+    remove_cpy              = False
         
     def error_exit(self):
         usage = "Usage:\n\t" + sys.argv[0] + " [<options>] <infile>\n" + \
@@ -105,10 +105,12 @@ class c_opt:
         
         sys.stderr.write(usage)
         sys.exit(1)
+
 opt = c_opt()
 
 i = 1
 
+print(len(sys.argv))
 while i < len(sys.argv):
     if sys.argv[i] == "-o":
         i += 1; opt.outfile = sys.argv[i]
@@ -127,11 +129,11 @@ while i < len(sys.argv):
     elif sys.argv[i] == "-tb":
         opt.trainbaseline =True 
     elif sys.argv[i] == "-lr":
-        opt.lr =True
+        opt.lr = True
     elif sys.argv[i] == "-lrt":
-        opt.lrt =True
+        opt.lrt = True
     elif sys.argv[i] == "-hlr":
-        opt.headline =True 
+        opt.headline = True 
     elif sys.argv[i] == "-smooth":
         opt.smooth = True
     elif sys.argv[i] == "-smoothopt":
@@ -150,15 +152,15 @@ while i < len(sys.argv):
         opt.error_exit()
     else:
         if exists(sys.argv[i]):
-			if isfile(sys.argv[i]):
-				opt.infile.append(sys.argv[i])
-			elif isdir(sys.argv[i]):
-				if sys.argv[i][-1]!=os.sep:
-					sys.argv[i]+=os.sep
-				for filen in os.listdir(sys.argv[i]):
-					filename=filen.split(".")
-					if filename[-1]=="png" and "nolyrics.png" not in filen and "groundtruth.png" not in filen and "debug.png" not in filen and "colorlyrics.png" not in filen and "groundtruth_false.png" not in filen:
-						opt.infile.append(sys.argv[i]+filen)
+            if isfile(sys.argv[i]):
+                opt.infile.append(sys.argv[i])
+            elif isdir(sys.argv[i]):
+                if sys.argv[i][-1]!=os.sep:
+                    sys.argv[i]+=os.sep
+                for filen in os.listdir(sys.argv[i]):
+                    filename=filen.split(".")
+                    if filename[-1]=="png" and "nolyrics.png" not in filen and "groundtruth.png" not in filen and "debug.png" not in filen and "colorlyrics.png" not in filen and "groundtruth_false.png" not in filen:
+                        opt.infile.append(sys.argv[i]+filen)
 
     i += 1
 
@@ -196,7 +198,7 @@ init_gamera()
 for img in opt.infile:
     print(img)
 
-    image=load_image(img)
+    image = load_image(img)
     
     # do quested preprocessing
     if image.data.pixel_type != ONEBIT:
